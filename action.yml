@@ -1,0 +1,38 @@
+name: Design Bits needs
+description: Adds a note of the customer needs behind a pull request, and records the pull request in Design Bits. Never blocks a merge.
+author: Design Bits
+branding:
+  icon: check-square
+  color: gray-dark
+inputs:
+  deny:
+    description: Globs of file paths that must never leave CI, comma or newline separated. Secrets, .env files and keys are always held back.
+    required: false
+    default: ''
+  allow:
+    description: Optional globs; when set, only matching paths are sent.
+    required: false
+    default: ''
+  project:
+    description: Your Design Bits workspace id, from Setup. Needed only when more than one workspace links this repo.
+    required: false
+    default: ''
+  endpoint:
+    description: Where pull requests are recorded.
+    required: false
+    default: https://designbits.app/api/why/action
+  key:
+    description: Fallback when OIDC is unavailable. Prefer a secret named DESIGNBITS_KEY in the environment.
+    required: false
+    default: ''
+  backfill-days:
+    description: On the first run for a repo, or a manual run, how many days of merged pull requests to send as possible matches.
+    required: false
+    default: '90'
+  github-token:
+    description: Token used to read the pull request's files and to write the note.
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: node20
+  main: index.mjs
