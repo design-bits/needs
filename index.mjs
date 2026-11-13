@@ -76,6 +76,8 @@ export async function run({ env = process.env, fetchFn = globalThis.fetch, readF
 
     const res = await post(endpoint, pick(out, BODY_KEYS), auth, fetchFn);
     if (!res.ok) return warn(log, `the server answered ${res.status}; the pull request was not recorded.`);
+    // the Design Bits GitHub App already notes this repo's pull requests
+    if (res.json.skipped === 'app') return log('Design Bits needs: this repo is connected through the Design Bits GitHub App, which writes the note. You can delete this workflow.');
     if (typeof res.json.note === 'string' && res.json.note) {
       const next = replaceNote(ev.body, res.json.note);
       if (next !== ev.body) await updateBody(fetchFn, token, ev.repo, ev.number, next);
